@@ -1,43 +1,54 @@
+// src/entities/media.entity.ts
 import {
-  Column,
-  CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
 @Entity('album')
 export class Album {
   @PrimaryGeneratedColumn()
   id: number;
 
+  // Nombre original del archivo (ej. "foto_facultad.jpg")
   @Column()
   originalName: string;
 
+  // Extensión o tipo MIME (útil para filtrar)
   @Column()
-  mimeType: string;
+  mimeType: string; // ej. "image/jpeg", "application/pdf"
 
-  @Column()
+  // Tamaño en bytes (para estadísticas o límites)
+  @Column({ type: 'int' })
   size: number;
 
+  // URL pública de Cloudinary (la que usas en el frontend)
   @Column()
-  url: string; //URL de cloudinary para el frontend
+  url: string;
 
+  // ID único de Cloudinary (necesario para borrar/editar después)
   @Column()
-  publicId: string; //ID unico de Cloudinary para editar/borrar despues
+  publicId: string;
 
-  @Column() //Carpeta en Cloudinary
+  // Carpeta en Cloudinary (ej. "facultad/noticias", "facultad/eventos")
+  @Column({ nullable: true })
   folder?: string;
 
+  // ¿Es una imagen? Útil para mostrar previsualizaciones
   @Column({ default: false })
   isImage: boolean;
 
-  //Usuario que subio el archivo en caso de tener Auth
+  // Usuario que subió el archivo (opcional, si tienes autenticación)
   @Column({ nullable: true })
-  uploadedBy?: string; // o relacion con User
+  uploadedBy?: string; // o relación con User
 
+  // Fecha de subida
   @CreateDateColumn()
-  createAt: Date;
+  createdAt: Date;
 
+  // Última modificación (por si actualizas metadatos)
   @UpdateDateColumn()
   updatedAt: Date;
 }

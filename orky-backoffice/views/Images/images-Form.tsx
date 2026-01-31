@@ -1,22 +1,26 @@
+import OrkyDrop from "@/components/OrkyDrop/orkyDrop";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface ImagesFormProps {
-    onClose: () => void  
+  onClose: () => void;
 }
 
-const ImagesForm = ( {onClose}: ImagesFormProps) => {
+const ImagesForm = ({ onClose }: ImagesFormProps) => {
   return (
     <>
-      <DialogContent className="border border-amber-300">
-        <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
-          <DialogDescription>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
-          </DialogDescription>
+      <DialogContent className="border border-amber-300 sm:max-w-lg">
+        <DialogHeader className=" flex items-center">
+          <DialogTitle>Selecciona o Arrastra una Imagen</DialogTitle>
         </DialogHeader>
-
+        <OrkyDrop />
         <div className="flex justify-end gap-2">
           <Button variant="outline" onClick={onClose}>
             Cancelar
@@ -28,4 +32,4 @@ const ImagesForm = ( {onClose}: ImagesFormProps) => {
   );
 };
 
-export default ImagesForm
+export default ImagesForm;

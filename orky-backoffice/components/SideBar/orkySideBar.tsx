@@ -16,13 +16,13 @@ import SideBarMenu from "@/lib/sideBarNavigation/sideBarMenu";
 function OrkySideBar() {
   
   return (
-    <Sidebar>
-      <SidebarContent>
-        <SidebarGroup />
+    <Sidebar >
+      <SidebarContent className="overflow-visible ">
+        <SidebarGroup  />
         <SidebarGroupContent>
           <SidebarMenu>
             <TopAnimation />
-            <SideBarMenu/>
+            <SideBarMenu />
           </SidebarMenu>
         </SidebarGroupContent>
         <SidebarGroup />

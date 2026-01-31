@@ -31,7 +31,7 @@ const AddElementButton = ({ buttonName, dataType }: AddElementButtonProps) => {
     <>
       <Dialog open={openForm} onOpenChange={setOpenForm}>
         <div className=" flex justify-end pb-3">
-          <DialogTrigger>
+          <DialogTrigger asChild>
             <Button
               onClick={() => setOpenForm(!openForm)}
               className="bg-amber-300 rounded-lg not-dark:border-black border-3 text-black"

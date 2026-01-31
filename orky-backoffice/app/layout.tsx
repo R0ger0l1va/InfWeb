@@ -3,7 +3,7 @@
 import { ThemeProvider } from "@/components/theme/theme-provider";
 import "./globals.css";
 import NavBar from "@/components/Navbar/navBar";
-import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import SideBar from "@/components/SideBar/orkySideBar";
 
 // const geistSans = Geist({
@@ -28,6 +28,16 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en" suppressHydrationWarning>
+      <head>
+        {/* Opcional: versión PNG para navegadores modernos */}
+        <link
+          rel="icon"
+          href="/assets/images/orky.png"
+          type="image/png"
+          sizes="32x32"
+        />
+        
+      </head>
       <body>
         <ThemeProvider
           attribute="class"
@@ -36,7 +46,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider>
-            <div className="flex h-screen w-full"> {/* 👈 contenedor flex */}
+            <div className="flex h-screen w-full">
+              {" "}
+              {/* 👈 contenedor flex */}
               <SideBar />
               <main className="flex-1 flex flex-col overflow-hidden">
                 <NavBar /> {/* ← dentro del main, arriba */}
