@@ -33,7 +33,9 @@ const Gallery = () => {
     fetchImages();
 
     // Configurar WebSocket
-    const socket = io("http://localhost:4000");
+    const socket = io(
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:4000",
+    );
 
     socket.on("gallery_updated", () => {
       console.log("Gallery updated via WebSocket, fetching new data...");
