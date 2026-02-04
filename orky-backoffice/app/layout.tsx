@@ -1,6 +1,7 @@
 // import type { Metadata } from "next";
 // import { Geist, Geist_Mono } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/theme-provider";
+import { AuthProvider } from "@/components/theme/auth-provider";
 import "./globals.css";
 import NavBar from "@/components/Navbar/navBar";
 import { SidebarProvider } from "@/components/ui/sidebar";
@@ -36,7 +37,6 @@ export default function RootLayout({
           type="image/png"
           sizes="32x32"
         />
-        
       </head>
       <body>
         <ThemeProvider
@@ -46,17 +46,19 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SidebarProvider>
-            <div className="flex h-screen w-full">
-              {" "}
-              {/* 👈 contenedor flex */}
-              <SideBar />
-              <main className="flex-1 flex flex-col overflow-hidden">
-                <NavBar /> {/* ← dentro del main, arriba */}
-                <div className="flex-1 overflow-auto p-4 md:p-6 border-t-2 border-yellow-600">
-                  {children}
-                </div>
-              </main>
-            </div>
+            <AuthProvider>
+              <div className="flex h-screen w-full">
+                {" "}
+                {/* 👈 contenedor flex */}
+                <SideBar />
+                <main className="flex-1 flex flex-col overflow-hidden">
+                  <NavBar /> {/* ← dentro del main, arriba */}
+                  <div className="flex-1 overflow-auto p-4 md:p-6 border-t-2 border-yellow-600">
+                    {children}
+                  </div>
+                </main>
+              </div>
+            </AuthProvider>
           </SidebarProvider>
         </ThemeProvider>
       </body>

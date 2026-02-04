@@ -1,5 +1,7 @@
 function DashBoard(){
-    return(<>DASHBOARD</>)
+    return(<>DASHBOARD
+    
+    </>)
 }
 
 export default DashBoard

@@ -58,7 +58,7 @@ const ImagesContainer = ({ imagesData }: ImagesContainerProps) => {
         />
       </div>
 
-      <div className="gap-5 flex flex-col">
+      <div className=" flex flex-col">
         <FilterSearch
           searchQuery={searchQuery}
           onSearchChange={setSearchQuery}

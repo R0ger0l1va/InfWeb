@@ -4,6 +4,9 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
+  --color-amber-custom: oklch(0.9607 0.2093 110.35);
+  --color-orky-yellow: oklch(0.85 0.21 95);
+  --color-orky-yellow-hover: oklch(0.8 0.21 95);
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-sans: var(--font-geist-sans);
@@ -44,6 +47,52 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
+  @keyframes slide-out-left {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+  }
+  @keyframes slide-in-right {
+    from {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+  @keyframes slide-out-right {
+    from {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    to {
+      transform: translateX(100%);
+      opacity: 0;
+    }
+  }
+  @keyframes slide-in-left {
+    from {
+      transform: translateX(-100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(0);
+      opacity: 1;
+    }
+  }
+
+  --animate-slide-out-left: slide-out-left 0.5s ease-in-out forwards;
+  --animate-slide-in-right: slide-in-right 0.5s ease-in-out forwards;
+  --animate-slide-out-right: slide-out-right 0.5s ease-in-out forwards;
+  --animate-slide-in-left: slide-in-left 0.5s ease-in-out forwards;
 }
 
 :root {
@@ -123,11 +172,14 @@
     @apply bg-background text-foreground;
   }
 
-  
-
-  
-
-  input, select {
+  input,
+  select {
     width: 100%;
+  }
+
+  /* Custom focus states for the yellow theme */
+  .focus-yellow:focus-within {
+    border-color: var(--color-orky-yellow);
+    box-shadow: 0 0 0 2px var(--color-orky-yellow) / 0.2;
   }
 }

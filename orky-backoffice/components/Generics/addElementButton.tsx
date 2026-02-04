@@ -34,7 +34,7 @@ const AddElementButton = ({ buttonName, dataType }: AddElementButtonProps) => {
           <DialogTrigger asChild>
             <Button
               onClick={() => setOpenForm(!openForm)}
-              className="bg-amber-300 rounded-lg not-dark:border-black border-3 text-black"
+              className="bg-amber-300 rounded-lg  hover:cursor-pointer text-black"
             >
               {" "}
               <UploadCloud /> {/* w-6 = 24px */}

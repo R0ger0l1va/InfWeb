@@ -25,6 +25,7 @@ const ImagePreview = ({ imageSrc,imageName }: ImagePreviewProps) => {
           alt="Imagen Previsualizada"
           width={800}
           height={1000}
+          unoptimized
         />
       </DialogContent>
     </>

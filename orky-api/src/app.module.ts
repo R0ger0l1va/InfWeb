@@ -3,6 +3,10 @@ import { Module } from '@nestjs/common';
 import { AlbumModule } from './modules/album/album.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { SeedService } from './modules/user/seed.service';
+import { WebsocketModule } from './modules/websocket/websocket.module';
 
 @Module({
   imports: [
@@ -25,6 +29,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
       inject: [ConfigService],
     }),
     AlbumModule,
+    UserModule,
+    AuthModule,
+    WebsocketModule,
   ],
+  providers: [SeedService],
 })
 export class AppModule {}

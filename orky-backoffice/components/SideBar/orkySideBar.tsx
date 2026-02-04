@@ -1,23 +1,21 @@
-import { navItems } from "@/lib/sideBarNavigation/sideNavigation";
 import {
-  SidebarHeader,
+ 
   SidebarContent,
   SidebarGroup,
   SidebarFooter,
   Sidebar,
   SidebarGroupContent,
   SidebarMenu,
-  SidebarMenuItem,
+
 } from "../ui/sidebar";
-import { Button } from "../ui/button";
-import Link from "next/link";
+
 import TopAnimation from "@/lib/sideBarNavigation/topAnimation";
 import SideBarMenu from "@/lib/sideBarNavigation/sideBarMenu";
 function OrkySideBar() {
   
   return (
-    <Sidebar >
-      <SidebarContent className="overflow-visible ">
+    <Sidebar variant="floating">
+      <SidebarContent className="overflow-visible border-red-500!">
         <SidebarGroup  />
         <SidebarGroupContent>
           <SidebarMenu>

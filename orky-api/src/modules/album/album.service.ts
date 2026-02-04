@@ -1,4 +1,3 @@
-// src/modules/album/album.service.ts
 import {
   Injectable,
   BadRequestException,
@@ -10,12 +9,14 @@ import { Repository } from 'typeorm';
 import { Readable } from 'stream';
 import { Album } from '../../entities/album.entity';
 import { v2 as cloudinary } from 'cloudinary';
+import { WebsocketGateway } from '../websocket/websocket.gateway';
 
 @Injectable()
 export class AlbumService {
   constructor(
     @InjectRepository(Album)
     private albumRepository: Repository<Album>,
+    private websocketGateway: WebsocketGateway,
   ) {}
 
   /**
@@ -86,7 +87,9 @@ export class AlbumService {
         uploadedBy,
       });
 
-      return await this.albumRepository.save(album);
+      const savedAlbum = await this.albumRepository.save(album);
+      this.websocketGateway.notifyGalleryUpdate();
+      return savedAlbum;
     } catch (error) {
       console.error('Error al subir archivo:', error);
       throw new InternalServerErrorException('Error al procesar el archivo');
@@ -123,6 +126,7 @@ export class AlbumService {
 
       // Eliminar de la BD
       await this.albumRepository.remove(album);
+      this.websocketGateway.notifyGalleryUpdate();
     } catch (error) {
       console.error('Error al eliminar archivo:', error);
       throw new InternalServerErrorException('Error al eliminar el archivo');

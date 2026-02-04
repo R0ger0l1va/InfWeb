@@ -11,18 +11,25 @@ export const imagesService = {
     return res.data;
   },
 
-  async uploadImages(formData: FormData):Promise<ImageForm>{
-    const res = await apiClient.post("/album/upload",formData,{
-      headers:{
-        'Content-Type':"multipart/formData",
-       
-      }
-    })
-    return res.data
+  async uploadImages(
+    formData: FormData,
+    onUploadProgress?: (progressEvent: {
+      loaded: number;
+      total?: number;
+    }) => void,
+  ): Promise<ImageForm> {
+    const res = await apiClient.post("/album/upload", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      timeout: 300000, // 5 minutos para archivos grandes
+      onUploadProgress,
+    });
+    return res.data;
   },
 
-  async deleteImages(id:number):Promise<void>{
-    const res = await apiClient.delete(`/album/${id}`)
-    return res.data
-  }
+  async deleteImages(id: number): Promise<void> {
+    const res = await apiClient.delete(`/album/${id}`);
+    return res.data;
+  },
 };

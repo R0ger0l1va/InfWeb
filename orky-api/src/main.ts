@@ -10,7 +10,12 @@ async function bootstrap() {
     api_secret: process.env.CLOUDINARY_API_SECRET,
   });
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000', // dominio del frontend
+    origin: [
+      process.env.FRONTEND_URL, // Add the environment variable to the array
+      'http://localhost:3000',
+      'http://localhost:3001',
+      'http://localhost:3002',
+    ].filter(Boolean), // Filter out any undefined/null values if FRONTEND_URL is not set
     credentials: true, // permite el uso de cookies o encabezados de autorización
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: [
