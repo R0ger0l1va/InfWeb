@@ -18,7 +18,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
         type: 'postgres',
-        url: configService.get('DATABASE_URL'), // Prioridad para la URL completa
+        url: configService.get('DATABASE_URL'),
         host: configService.get('DB_HOST'),
         port: +configService.get('DB_PORT'),
         username: configService.get('DB_USERNAME'),
@@ -26,6 +26,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
         database: configService.get('DB_NAME'),
         autoLoadEntities: true,
         synchronize: true,
+        ssl: configService.get('DATABASE_URL') ? { rejectUnauthorized: false } : false,
       }),
       inject: [ConfigService],
     }),
