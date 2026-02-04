@@ -18,6 +18,8 @@ async function bootstrap() {
     ],
     credentials: true, // permite el uso de cookies o encabezados de autorización
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    preflightContinue: false,
+    optionsSuccessStatus: 204,
     allowedHeaders: [
       'Content-Type',
       'Authorization',
