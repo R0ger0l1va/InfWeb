@@ -53,7 +53,7 @@ const LoginPage = () => {
         setIsExiting(true);
         // Esperamos a que termine la animación (0.5s en globals.css)
         setTimeout(() => {
-          router.push("/dashboard");
+          window.location.href = "/dashboard";
         }, 500);
       }
     } catch {
