@@ -79,7 +79,14 @@ export class UserService {
       await this.userRepository.save(superAdmin);
       console.log('✅ SuperAdmin creado exitosamente');
     } else {
-      console.log('ℹ️ SuperAdmin ya existe');
+      // Si ya existe, actualizamos la contraseña por si cambió en el .env (o si tenía comillas por error)
+      const hashedPassword: string = await bcrypt.hash(superAdminPassword, 10);
+      existingSuperAdmin.password = hashedPassword;
+      // Aseguramos que tenga role ADMIN
+      existingSuperAdmin.role = Role.ADMIN;
+
+      await this.userRepository.save(existingSuperAdmin);
+      console.log('ℹ️ SuperAdmin actualizado con la contraseña del .env');
     }
   }
 }
