@@ -9,6 +9,7 @@ import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { SeedService } from './modules/user/seed.service';
 import { WebsocketModule } from './modules/websocket/websocket.module';
+import { LoveMessageModule } from './modules/love-message/love-message.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { WebsocketModule } from './modules/websocket/websocket.module';
     UserModule,
     AuthModule,
     WebsocketModule,
+    LoveMessageModule,
   ],
   controllers: [AppController],
   providers: [AppService, SeedService],
