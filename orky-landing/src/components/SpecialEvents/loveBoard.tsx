@@ -117,10 +117,17 @@ export default function LoveBoard() {
                     </span>{" "}
                     Evento Especial
                   </h2>
-                  <p className="text-rose-100 flex items-center justify-center md:justify-start gap-2 text-sm mt-1">
-                    <Calendar className="w-4 h-4" /> Temporada de Afecto y
-                    Amistad
-                  </p>
+                  <div className="text-rose-100 flex items-center flex-col justify-center md:justify-start gap-2 text-sm mt-1">
+                    <span className="font-bold flex items-center gap-2">
+                      <Calendar className="w-4 h-4" />
+                      Buzón Anónimo
+                    </span>{" "}
+                    <div className="flex items-center gap-1">
+                      por el día del:
+                      <span className="font-bold "> Amor </span>y la
+                    </div>{" "}
+                    <span className="font-bold ">amistad</span>
+                  </div>
                 </div>
               </div>
 
