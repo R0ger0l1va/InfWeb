@@ -1,0 +1,290 @@
+"use client";
+
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  Heart,
+  Calendar,
+  ArrowLeft,
+  ArrowRight,
+  User,
+  Star,
+} from "lucide-react";
+import { Card, CardContent } from "@/src/components/ui/card";
+import { Button } from "@/src/components/ui/button";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/src/components/ui/select";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@/src/components/ui/avatar";
+
+// --- Types ---
+interface LoveMessage {
+  id: string;
+  recipient: string;
+  message: string;
+  // sender?: string; // Removed sender as requested (Anonymous)
+  createdAt: string;
+  likes?: number;
+}
+
+// --- Mock Data ---
+const MOCK_MESSAGES: LoveMessage[] = Array.from({ length: 25 }).map((_, i) => ({
+  id: `msg-${i + 1}`,
+  recipient: i % 2 === 0 ? "Ana María" : "Carlos Pérez",
+  message:
+    i % 3 === 0
+      ? "¡Gracias por ser una inspiración para todos nosotros! Tu dedicación en cada proyecto es admirable."
+      : i % 3 === 1
+        ? "Espero que tengas un día maravilloso lleno de alegría y éxito. ¡Te lo mereces!"
+        : "Tu energía positiva contagia a todo el equipo. ¡Sigue brillando!",
+  createdAt: "Hace 2 horas",
+  likes: Math.floor(Math.random() * 50) + 1,
+}));
+
+// --- Constants ---
+const LOVE_BG = "bg-rose-500";
+const LOVE_TEXT = "text-rose-500";
+const CHAT_BG_ODD = "bg-rose-500 text-white"; // Impares (Left)
+const CHAT_BG_EVEN =
+  "bg-white dark:bg-zinc-800 text-gray-800 dark:text-gray-100"; // Pares (Right)
+
+export default function LoveBoard() {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(6);
+
+  // Calcs
+  const totalPages = Math.ceil(MOCK_MESSAGES.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentMessages = MOCK_MESSAGES.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
+
+  const handlePageChange = (newPage: number) => {
+    if (newPage >= 1 && newPage <= totalPages) {
+      setCurrentPage(newPage);
+    }
+  };
+
+  return (
+    <div className="w-full max-w-5xl mx-auto p-4 md:p-8 space-y-8">
+      {/* Container - Glassmorphism Card */}
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Card className="border-0 shadow-xl overflow-hidden backdrop-blur-md bg-white/80 dark:bg-black/40 ring-1 ring-border/50">
+          {/* Header - Seasonal Event Style */}
+          <div className={`relative ${LOVE_BG} p-6 text-white overflow-hidden`}>
+            <div className="absolute inset-0 bg-black/10" />{" "}
+            {/* Texture overlay */}
+            <div className="absolute -right-12 -top-12 opacity-20">
+              <Heart className="w-64 h-64 rotate-12" strokeWidth={1} />
+            </div>
+            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="relative">
+                  <div className="absolute inset-0 bg-white/30 rounded-full blur-md animate-pulse" />
+                  <Avatar className="w-16 h-16 border-2 border-white/50 shadow-lg">
+                    <AvatarImage
+                      src="/images/loveOrky.jpg"
+                      alt="LoveOrky"
+                      className="object-cover"
+                    />
+                    <AvatarFallback className="bg-white/20 text-white">
+                      <Heart className="w-8 h-8 fill-current" />
+                    </AvatarFallback>
+                  </Avatar>
+                  <div className="absolute -bottom-1 -right-1 bg-white text-rose-600 rounded-full p-1 shadow-sm">
+                    <Star className="w-3 h-3 fill-current" />
+                  </div>
+                </div>
+
+                <div className="text-center md:text-left">
+                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
+                    Love Board{" "}
+                    <span className="opacity-80 font-light hidden sm:inline">
+                      |
+                    </span>{" "}
+                    Evento Especial
+                  </h2>
+                  <p className="text-rose-100 flex items-center justify-center md:justify-start gap-2 text-sm mt-1">
+                    <Calendar className="w-4 h-4" /> Temporada de Afecto y
+                    Amistad
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 bg-white/10 p-2 rounded-lg backdrop-blur-sm border border-white/20">
+                <span className="text-xs font-medium text-white/90 uppercase tracking-widest px-2">
+                  Mensajes
+                </span>
+                <div className="px-3 py-1 bg-white text-rose-600 rounded font-bold text-lg shadow-sm">
+                  {MOCK_MESSAGES.length}
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* Content Area - Chat Window Style */}
+          <CardContent className="p-0 bg-[#e5ddd5] dark:bg-zinc-900/50 min-h-[500px] flex flex-col relative">
+            {/* WhatsApp-like background pattern could go here */}
+            <div
+              className="absolute inset-0 opacity-5 pointer-events-none"
+              style={{
+                backgroundImage:
+                  'url("https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png")',
+              }}
+            ></div>
+
+            <div className="flex-1 p-4 md:p-6 overflow-y-auto custom-scrollbar relative z-10">
+              <div className="flex flex-col space-y-4">
+                <AnimatePresence mode="popLayout">
+                  {currentMessages.map((msg, index) => {
+                    // Logic:
+                    // Index 0 (1st item) -> "Impar" -> Left -> Theme Color (Rose)
+                    // Index 1 (2nd item) -> "Par" -> Right -> White
+                    const isLeft = index % 2 === 0;
+
+                    return (
+                      <motion.div
+                        key={msg.id}
+                        layout
+                        initial={{
+                          opacity: 0,
+                          scale: 0.9,
+                          y: 10,
+                          x: isLeft ? -20 : 20,
+                        }}
+                        animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                        exit={{
+                          opacity: 0,
+                          scale: 0.9,
+                          transition: { duration: 0.2 },
+                        }}
+                        transition={{ duration: 0.3, delay: index * 0.05 }}
+                        className={`flex w-full ${isLeft ? "justify-start" : "justify-end"}`}
+                      >
+                        <div
+                          className={`
+                                relative max-w-[85%] md:max-w-[70%] p-3 rounded-2xl shadow-sm
+                                ${isLeft ? `${CHAT_BG_ODD} rounded-tl-none` : `${CHAT_BG_EVEN} rounded-tr-none`}
+                            `}
+                        >
+                          {/* Little triangle for speech bubble */}
+                          <div
+                            className={`absolute top-0 w-3 h-3 ${isLeft ? `-left-2 ${LOVE_BG}` : `-right-2 bg-white dark:bg-zinc-800`} 
+                                [clip-path:polygon(0_0,100%_0,100%_100%)] ${!isLeft && "scale-x-[-1]"}`}
+                          ></div>
+
+                          {/* Header inside bubble */}
+                          <div
+                            className={`flex items-center justify-between gap-4 mb-1 text-xs ${isLeft ? "text-rose-100" : "text-muted-foreground"}`}
+                          >
+                            <div className="flex items-center gap-1 font-bold">
+                              {isLeft ? <User className="w-3 h-3" /> : null}
+                              <span> Para: {msg.recipient}</span>
+                            </div>
+                          </div>
+
+                          {/* Message Body */}
+                          <p
+                            className={`text-sm leading-relaxed ${isLeft ? "text-white" : ""}`}
+                          >
+                            {msg.message}
+                          </p>
+
+                          {/* Footer (Time & Likes) */}
+                          <div
+                            className={`flex items-center justify-end gap-2 mt-1 text-[10px] ${isLeft ? "text-rose-100/70" : "text-gray-400"}`}
+                          >
+                            <span>{msg.createdAt}</span>
+                            {msg.likes && msg.likes > 0 && (
+                              <div className="flex items-center gap-0.5">
+                                <Heart
+                                  className={`w-3 h-3 ${isLeft ? "fill-white/50 text-white" : "fill-rose-500 text-rose-500"}`}
+                                />
+                                <span>{msg.likes}</span>
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </motion.div>
+                    );
+                  })}
+                </AnimatePresence>
+              </div>
+            </div>
+
+            {/* Pagination Footer */}
+            <div className="p-4 border-t bg-white/60 dark:bg-black/60 backdrop-blur-sm flex flex-col sm:flex-row items-center justify-between gap-4 z-20">
+              <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                <span>Mostrar</span>
+                <Select
+                  value={itemsPerPage.toString()}
+                  onValueChange={(val: string) => {
+                    setItemsPerPage(Number(val));
+                    setCurrentPage(1); // Reset to page 1
+                  }}
+                >
+                  <SelectTrigger className="w-[70px] h-8">
+                    <SelectValue placeholder="6" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="3">3</SelectItem>
+                    <SelectItem value="6">6</SelectItem>
+                    <SelectItem value="9">9</SelectItem>
+                    <SelectItem value="12">12</SelectItem>
+                  </SelectContent>
+                </Select>
+                <span>por página</span>
+                <span className="ml-2 text-xs opacity-70">
+                  (Total: {MOCK_MESSAGES.length})
+                </span>
+              </div>
+
+              <div className="flex items-center gap-1 bg-secondary/50 p-1 rounded-lg">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handlePageChange(currentPage - 1)}
+                  disabled={currentPage === 1}
+                  className="h-8 w-8 hover:text-rose-600"
+                >
+                  <ArrowLeft className="w-4 h-4" />
+                </Button>
+
+                <div className="flex items-center px-2 text-sm font-medium">
+                  <span className="text-rose-600">{currentPage}</span>
+                  <span className="mx-1 text-muted-foreground">/</span>
+                  <span>{totalPages}</span>
+                </div>
+
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => handlePageChange(currentPage + 1)}
+                  disabled={currentPage === totalPages}
+                  className="h-8 w-8 hover:text-rose-600"
+                >
+                  <ArrowRight className="w-4 h-4" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+          <div className="flex items-center justify-center py-4 px-2 bg-linear-to-r from-transparent via-rose-500/10 to-transparent text-rose-600 dark:text-rose-400 text-sm font-medium italic">
+            Desarrollado por Roger Oliva: Feliz jornada del amor y la amistad
+          </div>
+        </Card>
+      </motion.div>
+    </div>
+  );
+}

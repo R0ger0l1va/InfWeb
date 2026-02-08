@@ -3,8 +3,17 @@
 import React from "react";
 import { motion } from "framer-motion";
 import { Calendar, MapPin, ArrowUpRight } from "lucide-react";
+import LoveBoard from "../SpecialEvents/loveBoard";
 
 const FacultyEvents = () => {
+  const loveMes = [
+    "te amo fidel",
+    "te quiero Omar",
+    "Ruben me excitas",
+    "Andy loco te quiero",
+    "te quiero Raul",
+  ];
+
   const events = [
     {
       date: "Oct 28",
@@ -37,6 +46,10 @@ const FacultyEvents = () => {
             Mantente al Día con la Facultad
           </h2>
         </div>
+
+        <section className="py-5 bg-gradient-to-b from-white to-rose-50/50">
+          <LoveBoard />
+        </section>
 
         <div className="grid md:grid-cols-3 gap-8">
           {events.map((event, index) => (

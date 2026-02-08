@@ -36,8 +36,8 @@ const Navbar = () => {
       <div className="container mx-auto px-6 flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 group">
-          <div className="w-10 h-10 bg-cujae-yellow rounded-lg flex items-center justify-center font-bold text-cujae-black text-xl group-hover:rotate-6 transition-transform">
-            I
+          <div className="w-10 h-10  rounded-lg flex items-center justify-center font-bold text-cujae-black text-xl group-hover:rotate-6 transition-transform">
+            <img src="/images/orky.png" alt="orky" />
           </div>
           <div className="flex flex-col">
             <span className="font-bold text-cujae-black text-lg leading-tight uppercase tracking-wide">
