@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Heart,
@@ -10,6 +10,7 @@ import {
   User,
   Star,
   Loader2,
+  Search,
 } from "lucide-react";
 import { Card, CardContent } from "@/src/components/ui/card";
 import { Button } from "@/src/components/ui/button";
@@ -39,6 +40,16 @@ interface LoveMessage {
   likes?: number;
 }
 
+// --- Utils ---
+const shuffleArray = <T,>(array: T[]): T[] => {
+  const shuffled = [...array];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
+};
+
 // --- Mock Data ---
 const MOCK_MESSAGES: LoveMessage[] = Array.from({ length: 25 }).map((_, i) => ({
   id: `msg-${i + 1}`,
@@ -61,32 +72,41 @@ const CHAT_BG_EVEN =
   "bg-white dark:bg-zinc-800 text-gray-800 dark:text-gray-100"; // Pares (Right)
 
 export default function LoveBoard() {
-  const [messages, setMessages] = useState<LoveMessage[]>(MOCK_MESSAGES);
+  const [messages, setMessages] = useState<LoveMessage[]>([]);
   const [loading, setLoading] = useState(true);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
+  const [searchTerm, setSearchTerm] = useState("");
+
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const fetchMessages = async () => {
       try {
         const data = await loveMessagesData.getMessages();
+        let formattedMessages: LoveMessage[] = [];
+
         if (data && data.length > 0) {
-          const formattedMessages: LoveMessage[] = data.map(
-            (msg: LoveMessages) => ({
-              id: msg.id,
-              recipient: msg.destinator,
-              message: msg.message,
-              createdAt: formatDistanceToNow(new Date(msg.messageDate), {
-                addSuffix: true,
-                locale: es,
-              }),
-              likes: Math.floor(Math.random() * 10),
+          formattedMessages = data.map((msg: LoveMessages) => ({
+            id: msg.id,
+            recipient: msg.destinator,
+            message: msg.message,
+            createdAt: formatDistanceToNow(new Date(msg.messageDate), {
+              addSuffix: true,
+              locale: es,
             }),
-          );
-          setMessages(formattedMessages);
+            likes: Math.floor(Math.random() * 10),
+          }));
+        } else {
+          // Fallback to mock data if no data from API
+          formattedMessages = MOCK_MESSAGES;
         }
+
+        // Shuffle messages randomly every time the page is entered/reloaded
+        setMessages(shuffleArray(formattedMessages));
       } catch (error) {
         console.error("Error fetching love messages:", error);
+        setMessages(shuffleArray(MOCK_MESSAGES));
       } finally {
         setLoading(false);
       }
@@ -95,14 +115,26 @@ export default function LoveBoard() {
     fetchMessages();
   }, []);
 
+  // Filtering
+  const filteredMessages = messages.filter((msg) =>
+    msg.recipient.toLowerCase().includes(searchTerm.toLowerCase()),
+  );
+
   // Calcs
-  const totalPages = Math.ceil(messages.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredMessages.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentMessages = messages.slice(startIndex, startIndex + itemsPerPage);
+  const currentMessages = filteredMessages.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
+      // Scroll to top of the message container
+      if (scrollContainerRef.current) {
+        scrollContainerRef.current.scrollTo({ top: 0, behavior: "smooth" });
+      }
     }
   };
 
@@ -163,19 +195,36 @@ export default function LoveBoard() {
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 bg-white/10 p-2 rounded-lg backdrop-blur-sm border border-white/20">
-                <span className="text-xs font-medium text-white/90 uppercase tracking-widest px-2">
-                  Mensajes
-                </span>
-                <div className="px-3 py-1 bg-white text-rose-600 rounded font-bold text-lg shadow-sm">
-                  {messages.length}
+              <div className="flex flex-col items-end gap-2">
+                <div className="flex items-center gap-3 bg-white/10 p-2 rounded-lg backdrop-blur-sm border border-white/20">
+                  <span className="text-xs font-medium text-white/90 uppercase tracking-widest px-2">
+                    Mensajes
+                  </span>
+                  <div className="px-3 py-1 bg-white text-rose-600 rounded font-bold text-lg shadow-sm">
+                    {messages.length}
+                  </div>
+                </div>
+
+                {/* Search Bar */}
+                <div className="relative w-full max-w-[200px]">
+                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                  <input
+                    type="text"
+                    placeholder="Buscar destinatario..."
+                    value={searchTerm}
+                    onChange={(e) => {
+                      setSearchTerm(e.target.value);
+                      setCurrentPage(1);
+                    }}
+                    className="w-full bg-white/10 border border-white/20 rounded-md py-1.5 pl-8 pr-3 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all font-medium"
+                  />
                 </div>
               </div>
             </div>
           </div>
           {/* Content Area - Chat Window Style */}
           <CardContent className="p-0 bg-[#e5ddd5] dark:bg-zinc-900/50 min-h-[500px] flex flex-col relative">
-            {/* WhatsApp-like background pattern could go here */}
+            {/* WhatsApp-like background pattern */}
             <div
               className="absolute inset-0 opacity-5 pointer-events-none"
               style={{
@@ -184,7 +233,10 @@ export default function LoveBoard() {
               }}
             ></div>
 
-            <div className="flex-1 p-4 md:p-6 overflow-y-auto custom-scrollbar relative z-10">
+            <div
+              ref={scrollContainerRef}
+              className="flex-1 p-4 md:p-6 overflow-y-auto max-h-[600px] custom-scrollbar relative z-10"
+            >
               {loading ? (
                 <div className="h-full flex flex-col items-center justify-center space-y-4 text-rose-500">
                   <Loader2 className="w-12 h-12 animate-spin" />
@@ -195,78 +247,84 @@ export default function LoveBoard() {
               ) : (
                 <div className="flex flex-col space-y-4">
                   <AnimatePresence mode="popLayout">
-                    {currentMessages.map((msg, index) => {
-                      // Logic:
-                      // Index 0 (1st item) -> "Impar" -> Left -> Theme Color (Rose)
-                      // Index 1 (2nd item) -> "Par" -> Right -> White
-                      const isLeft = index % 2 === 0;
+                    {currentMessages.length > 0 ? (
+                      currentMessages.map((msg, index) => {
+                        const isLeft = index % 2 === 0;
 
-                      return (
-                        <motion.div
-                          key={msg.id}
-                          layout
-                          initial={{
-                            opacity: 0,
-                            scale: 0.9,
-                            y: 10,
-                            x: isLeft ? -20 : 20,
-                          }}
-                          animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
-                          exit={{
-                            opacity: 0,
-                            scale: 0.9,
-                            transition: { duration: 0.2 },
-                          }}
-                          transition={{ duration: 0.3, delay: index * 0.05 }}
-                          className={`flex w-full ${isLeft ? "justify-start" : "justify-end"}`}
-                        >
-                          <div
-                            className={`
-                                  relative max-w-[85%] md:max-w-[70%] p-3 rounded-2xl shadow-sm
-                                  ${isLeft ? `${CHAT_BG_ODD} rounded-tl-none` : `${CHAT_BG_EVEN} rounded-tr-none`}
-                              `}
+                        return (
+                          <motion.div
+                            key={msg.id}
+                            layout
+                            initial={{
+                              opacity: 0,
+                              scale: 0.9,
+                              y: 10,
+                              x: isLeft ? -20 : 20,
+                            }}
+                            animate={{ opacity: 1, scale: 1, y: 0, x: 0 }}
+                            exit={{
+                              opacity: 0,
+                              scale: 0.9,
+                              transition: { duration: 0.2 },
+                            }}
+                            transition={{ duration: 0.3, delay: index * 0.05 }}
+                            className={`flex w-full ${isLeft ? "justify-start" : "justify-end"}`}
                           >
-                            {/* Little triangle for speech bubble */}
                             <div
-                              className={`absolute top-0 w-3 h-3 ${isLeft ? `-left-2 ${LOVE_BG}` : `-right-2 bg-white dark:bg-zinc-800`} 
-                                  [clip-path:polygon(0_0,100%_0,100%_100%)] ${!isLeft && "scale-x-[-1]"}`}
-                            ></div>
-
-                            {/* Header inside bubble */}
-                            <div
-                              className={`flex items-center justify-between gap-4 mb-1 text-xs ${isLeft ? "text-rose-100" : "text-muted-foreground"}`}
+                              className={`
+                                    relative max-w-[85%] md:max-w-[70%] p-3 rounded-2xl shadow-sm
+                                    ${isLeft ? `${CHAT_BG_ODD} rounded-tl-none` : `${CHAT_BG_EVEN} rounded-tr-none`}
+                                `}
                             >
-                              <div className="flex items-center gap-1 font-bold">
-                                {isLeft ? <User className="w-3 h-3" /> : null}
-                                <span> Para: {msg.recipient}</span>
+                              {/* Little triangle for speech bubble */}
+                              <div
+                                className={`absolute top-0 w-3 h-3 ${isLeft ? `-left-2 ${LOVE_BG}` : `-right-2 bg-white dark:bg-zinc-800`} 
+                                    [clip-path:polygon(0_0,100%_0,100%_100%)] ${!isLeft && "scale-x-[-1]"}`}
+                              ></div>
+
+                              {/* Header inside bubble */}
+                              <div
+                                className={`flex items-center justify-between gap-4 mb-1 text-xs ${isLeft ? "text-rose-100" : "text-muted-foreground"}`}
+                              >
+                                <div className="flex items-center gap-1 font-bold">
+                                  {isLeft ? <User className="w-3 h-3" /> : null}
+                                  <span> Para: {msg.recipient}</span>
+                                </div>
+                              </div>
+
+                              {/* Message Body */}
+                              <p
+                                className={`text-sm leading-relaxed ${isLeft ? "text-white" : ""}`}
+                              >
+                                {msg.message}
+                              </p>
+
+                              {/* Footer (Time & Likes) */}
+                              <div
+                                className={`flex items-center justify-end gap-2 mt-1 text-[10px] ${isLeft ? "text-rose-100/70" : "text-gray-400"}`}
+                              >
+                                <span>{msg.createdAt}</span>
+                                {msg.likes && msg.likes > 0 && (
+                                  <div className="flex items-center gap-0.5">
+                                    <Heart
+                                      className={`w-3 h-3 ${isLeft ? "fill-white/50 text-white" : "fill-rose-500 text-rose-500"}`}
+                                    />
+                                    <span>{msg.likes}</span>
+                                  </div>
+                                )}
                               </div>
                             </div>
-
-                            {/* Message Body */}
-                            <p
-                              className={`text-sm leading-relaxed ${isLeft ? "text-white" : ""}`}
-                            >
-                              {msg.message}
-                            </p>
-
-                            {/* Footer (Time & Likes) */}
-                            <div
-                              className={`flex items-center justify-end gap-2 mt-1 text-[10px] ${isLeft ? "text-rose-100/70" : "text-gray-400"}`}
-                            >
-                              <span>{msg.createdAt}</span>
-                              {msg.likes && msg.likes > 0 && (
-                                <div className="flex items-center gap-0.5">
-                                  <Heart
-                                    className={`w-3 h-3 ${isLeft ? "fill-white/50 text-white" : "fill-rose-500 text-rose-500"}`}
-                                  />
-                                  <span>{msg.likes}</span>
-                                </div>
-                              )}
-                            </div>
-                          </div>
-                        </motion.div>
-                      );
-                    })}
+                          </motion.div>
+                        );
+                      })
+                    ) : (
+                      <div className="h-full flex flex-col items-center justify-center space-y-2 text-rose-500 opacity-60">
+                        <Search className="w-12 h-12" />
+                        <p className="font-medium">
+                          No se encontraron mensajes para "{searchTerm}"
+                        </p>
+                      </div>
+                    )}
                   </AnimatePresence>
                 </div>
               )}
@@ -283,7 +341,7 @@ export default function LoveBoard() {
                     setCurrentPage(1); // Reset to page 1
                   }}
                 >
-                  <SelectTrigger className="w-[70px] h-8">
+                  <SelectTrigger className="w-[70px] h-8 text-xs">
                     <SelectValue placeholder="6" />
                   </SelectTrigger>
                   <SelectContent>
@@ -295,7 +353,7 @@ export default function LoveBoard() {
                 </Select>
                 <span>por página</span>
                 <span className="ml-2 text-xs opacity-70">
-                  (Total: {messages.length})
+                  (Encontrados: {filteredMessages.length})
                 </span>
               </div>
 
@@ -304,14 +362,16 @@ export default function LoveBoard() {
                   variant="ghost"
                   size="icon"
                   onClick={() => handlePageChange(currentPage - 1)}
-                  disabled={currentPage === 1}
+                  disabled={currentPage === 1 || totalPages === 0}
                   className="h-8 w-8 hover:text-rose-600"
                 >
                   <ArrowLeft className="w-4 h-4" />
                 </Button>
 
                 <div className="flex items-center px-2 text-sm font-medium">
-                  <span className="text-rose-600">{currentPage}</span>
+                  <span className="text-rose-600 font-bold">
+                    {filteredMessages.length > 0 ? currentPage : 0}
+                  </span>
                   <span className="mx-1 text-muted-foreground">/</span>
                   <span>{totalPages}</span>
                 </div>
@@ -320,7 +380,7 @@ export default function LoveBoard() {
                   variant="ghost"
                   size="icon"
                   onClick={() => handlePageChange(currentPage + 1)}
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === totalPages || totalPages === 0}
                   className="h-8 w-8 hover:text-rose-600"
                 >
                   <ArrowRight className="w-4 h-4" />
