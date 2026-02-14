@@ -77,10 +77,23 @@ export default function LoveBoard() {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(6);
   const [searchTerm, setSearchTerm] = useState("");
+  const [likedMessages, setLikedMessages] = useState<Set<string | number>>(
+    new Set(),
+  );
 
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Load liked messages from localStorage
+    const savedLikes = localStorage.getItem("orky_love_likes");
+    if (savedLikes) {
+      try {
+        setLikedMessages(new Set(JSON.parse(savedLikes)));
+      } catch (e) {
+        console.error("Error parsing saved likes", e);
+      }
+    }
+
     const fetchMessages = async () => {
       try {
         const data = await loveMessagesData.getMessages();
@@ -139,12 +152,25 @@ export default function LoveBoard() {
   };
 
   const handleLike = async (id: number | string) => {
+    if (likedMessages.has(id)) return;
+
     try {
       const updatedMessage = await loveMessagesData.incrementLikes(id);
+
+      // Update local state for messages
       setMessages((prev) =>
         prev.map((msg) =>
           msg.id === id ? { ...msg, likes: updatedMessage.likes } : msg,
         ),
+      );
+
+      // Update liked messages set and localStorage
+      const newLiked = new Set(likedMessages);
+      newLiked.add(id);
+      setLikedMessages(newLiked);
+      localStorage.setItem(
+        "orky_love_likes",
+        JSON.stringify(Array.from(newLiked)),
       );
     } catch (error) {
       console.error("Error liking message:", error);
@@ -271,6 +297,7 @@ export default function LoveBoard() {
                     {currentMessages.length > 0 ? (
                       currentMessages.map((msg, index) => {
                         const isLeft = index % 2 === 0;
+                        const isLiked = likedMessages.has(msg.id);
 
                         return (
                           <motion.div
@@ -332,12 +359,29 @@ export default function LoveBoard() {
                                 <span>{msg.createdAt}</span>
                                 <button
                                   onClick={() => handleLike(msg.id)}
-                                  className={`flex items-center gap-0.5 transition-transform active:scale-125 focus:outline-none`}
+                                  disabled={isLiked}
+                                  className={`flex items-center gap-0.5 transition-all focus:outline-none ${
+                                    isLiked
+                                      ? "cursor-default scale-110"
+                                      : "hover:scale-110 active:scale-125"
+                                  }`}
                                 >
                                   <Heart
-                                    className={`w-3 h-3 ${isLeft ? "fill-white/50 text-white" : "fill-rose-500 text-rose-500"}`}
+                                    className={`w-3 h-3 transition-colors ${
+                                      isLiked
+                                        ? "fill-rose-500 text-rose-500"
+                                        : isLeft
+                                          ? "fill-white/20 text-white hover:fill-rose-200"
+                                          : "fill-gray-100 text-gray-300 hover:text-rose-500"
+                                    }`}
                                   />
-                                  <span>{msg.likes || 0}</span>
+                                  <span
+                                    className={
+                                      isLiked ? "font-bold text-rose-500" : ""
+                                    }
+                                  >
+                                    {msg.likes || 0}
+                                  </span>
                                 </button>
                               </div>
                             </div>
