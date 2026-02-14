@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Inf_Cujae",
+  title: "Inf_BuzonDelAmor",
   description: "La web de la facultad de informatica y el hogar del gran Orky",
 };
 
