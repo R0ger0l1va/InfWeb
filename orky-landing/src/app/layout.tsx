@@ -14,7 +14,7 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: "Inf_BuzonDelAmor",
-  description: "La web de la facultad de informatica y el hogar del gran Orky",
+  description: "Web de los resultados del buzon por el dia del amor y la amistad de la facultad de ingenieria informatica de la cujae",
 };
 
 import KeepAlive from "@/src/components/KeepAlive";
@@ -29,7 +29,7 @@ export default function RootLayout({
       <head>
         <link
           rel="icon"
-          href="/images/orky.png"
+          href="/images/loveOrky.jpg"
           type="image/png"
           sizes="32x32"
         />
