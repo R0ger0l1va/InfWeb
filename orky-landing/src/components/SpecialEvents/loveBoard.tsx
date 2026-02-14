@@ -368,16 +368,22 @@ export default function LoveBoard() {
                                 >
                                   <Heart
                                     className={`w-3 h-3 transition-colors ${
-                                      isLiked
-                                        ? "fill-rose-500 text-rose-500"
-                                        : isLeft
+                                      isLiked && !isLeft
+                                        ? "fill-rose-500 text-rose-500":
+                                        isLiked
+                                        ? "fill-white text-white":
+                                         isLeft && !isLiked
                                           ? "fill-white/20 text-white hover:fill-rose-200"
                                           : "fill-gray-100 text-gray-300 hover:text-rose-500"
                                     }`}
                                   />
                                   <span
                                     className={
-                                      isLiked ? "font-bold text-rose-500" : ""
+                                      isLiked && !isLeft
+                                        ? "font-bold text-rose-500 "
+                                        : isLeft && isLiked
+                                          ? "font-bold text-white"
+                                          : ""
                                     }
                                   >
                                     {msg.likes || 0}
