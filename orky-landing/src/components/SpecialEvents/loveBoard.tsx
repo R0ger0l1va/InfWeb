@@ -116,10 +116,10 @@ export default function LoveBoard() {
         }
 
         // Shuffle messages randomly every time the page is entered/reloaded
-        setMessages(shuffleArray(formattedMessages));
+        setMessages(formattedMessages);
       } catch (error) {
         console.error("Error fetching love messages:", error);
-        setMessages(shuffleArray(MOCK_MESSAGES));
+        setMessages(MOCK_MESSAGES);
       } finally {
         setLoading(false);
       }
