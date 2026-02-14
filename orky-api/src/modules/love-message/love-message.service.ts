@@ -63,10 +63,9 @@ export class LoveMessageService {
 
     const messages = mockData.map((item: any) => {
       const message = new LoveMessage();
-      message.destinator =
-        item['¿A quién va dirigido tu mensaje? (Nombre, apodo o iniciales)'];
-      message.message = item['Escribe tu mensaje anónimo para esta persona'];
-      message.messageDate = new Date(item['Marca temporal']);
+      message.destinator = item['to'];
+      message.message = item['message'];
+      message.messageDate = new Date(item['timestamp']);
       return message;
     });
 
