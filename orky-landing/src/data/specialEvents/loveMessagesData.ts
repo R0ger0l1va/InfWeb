@@ -6,6 +6,10 @@ const loveMessagesData = {
     const res = await apiClient.get("/love-message");
     return res.data;
   },
+  incrementLikes: async (id: number | string): Promise<LoveMessages> => {
+    const res = await apiClient.patch(`/love-message/${id}/like`);
+    return res.data;
+  },
 };
 
 export default loveMessagesData;

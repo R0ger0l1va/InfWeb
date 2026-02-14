@@ -3,4 +3,5 @@ export interface LoveMessages {
   destinator: string;
   message: string;
   messageDate: string;
+  likes: number;
 }

@@ -95,7 +95,7 @@ export default function LoveBoard() {
               addSuffix: true,
               locale: es,
             }),
-            likes: Math.floor(Math.random() * 10),
+            likes: msg.likes || 0,
           }));
         } else {
           // Fallback to mock data if no data from API
@@ -138,6 +138,19 @@ export default function LoveBoard() {
     }
   };
 
+  const handleLike = async (id: number | string) => {
+    try {
+      const updatedMessage = await loveMessagesData.incrementLikes(id);
+      setMessages((prev) =>
+        prev.map((msg) =>
+          msg.id === id ? { ...msg, likes: updatedMessage.likes } : msg,
+        ),
+      );
+    } catch (error) {
+      console.error("Error liking message:", error);
+    }
+  };
+
   return (
     <div className="w-full max-w-5xl mx-auto p-4 md:p-8 space-y-8">
       {/* Container - Glassmorphism Card */}
@@ -148,15 +161,17 @@ export default function LoveBoard() {
       >
         <Card className="border-0 shadow-xl overflow-hidden backdrop-blur-md bg-white/80 dark:bg-black/40 ring-1 ring-border/50">
           {/* Header - Seasonal Event Style */}
-          <div className={`relative ${LOVE_BG} p-6 text-white overflow-hidden`}>
+          <div
+            className={`relative ${LOVE_BG} p-5 sm:p-6 text-white overflow-hidden`}
+          >
             <div className="absolute inset-0 bg-black/10" />{" "}
             {/* Texture overlay */}
             <div className="absolute -right-12 -top-12 opacity-20">
               <Heart className="w-64 h-64 rotate-12" strokeWidth={1} />
             </div>
-            <div className="relative z-10 flex flex-col md:flex-row items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <div className="relative">
+            <div className="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-6">
+              <div className="flex flex-col md:flex-row items-center gap-4">
+                <div className="relative shrink-0">
                   <div className="absolute inset-0 bg-white/30 rounded-full blur-md animate-pulse" />
                   <Avatar className="w-16 h-16 border-2 border-white/50 shadow-lg">
                     <AvatarImage
@@ -173,41 +188,47 @@ export default function LoveBoard() {
                   </div>
                 </div>
 
-                <div className="text-center md:text-left">
-                  <h2 className="text-2xl md:text-3xl font-bold tracking-tight text-white flex items-center justify-center md:justify-start gap-2">
-                    Love Board{" "}
-                    <span className="opacity-80 font-light hidden sm:inline">
+                <div className="text-center md:text-left space-y-2">
+                  <h2 className="text-lg sm:text-2xl md:text-3xl font-bold tracking-tight text-white leading-tight">
+                    Confesionario Anónimo{" "}
+                    <span className="block sm:inline text-rose-100/90 text-sm sm:text-2xl md:text-3xl">
+                      por el 14 de febrero
+                    </span>
+                    <span className="hidden md:inline mx-2 opacity-50 font-light">
                       |
-                    </span>{" "}
-                    Evento Especial
+                    </span>
+                    <span className="block md:inline text-xs sm:text-lg md:text-xl opacity-90">
+                      Ingeniería Informática
+                    </span>
                   </h2>
-                  <div className="text-rose-100 flex items-center flex-col justify-center md:justify-start gap-2 text-sm mt-1">
-                    <span className="font-bold flex items-center gap-2">
+                  <div className="text-rose-100 flex flex-wrap items-center justify-center md:justify-start gap-x-4 gap-y-1 text-xs sm:text-sm mt-1">
+                    <span className="font-bold flex items-center gap-1.5">
                       <Calendar className="w-4 h-4" />
                       Buzón Anónimo
-                    </span>{" "}
+                    </span>
+                    <span className="opacity-60 hidden sm:block">•</span>
                     <div className="flex items-center gap-1">
-                      por el día del:
-                      <span className="font-bold "> Amor </span>y la
-                    </div>{" "}
-                    <span className="font-bold ">amistad</span>
+                      <span>Celebrando el</span>
+                      <span className="font-bold">Amor</span>
+                      <span>y la</span>
+                      <span className="font-bold">Amistad</span>
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <div className="flex flex-col items-end gap-2">
-                <div className="flex items-center gap-3 bg-white/10 p-2 rounded-lg backdrop-blur-sm border border-white/20">
-                  <span className="text-xs font-medium text-white/90 uppercase tracking-widest px-2">
+              <div className="flex flex-col items-center lg:items-end gap-3 w-full lg:w-auto">
+                <div className="flex items-center gap-3 bg-white/10 p-2 rounded-lg backdrop-blur-sm border border-white/20 w-fit">
+                  <span className="text-[10px] sm:text-xs font-medium text-white/90 uppercase tracking-widest px-2">
                     Mensajes
                   </span>
-                  <div className="px-3 py-1 bg-white text-rose-600 rounded font-bold text-lg shadow-sm">
+                  <div className="px-3 py-1 bg-white text-rose-600 rounded font-bold text-sm sm:text-lg shadow-sm">
                     {messages.length}
                   </div>
                 </div>
-
                 {/* Search Bar */}
-                <div className="relative w-full max-w-[200px]">
-                  <Search className="absolute left-2 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
+                <div className="relative w-full sm:w-64 lg:w-72">
+                  <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-white/70" />
                   <input
                     type="text"
                     placeholder="Buscar destinatario..."
@@ -216,7 +237,7 @@ export default function LoveBoard() {
                       setSearchTerm(e.target.value);
                       setCurrentPage(1);
                     }}
-                    className="w-full bg-white/10 border border-white/20 rounded-md py-1.5 pl-8 pr-3 text-sm text-white placeholder:text-white/50 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all font-medium"
+                    className="w-full bg-white/10 border border-white/20 rounded-full py-2 pl-10 pr-4 text-sm text-white placeholder:text-white/60 focus:outline-none focus:ring-2 focus:ring-white/30 transition-all font-medium backdrop-blur-md"
                   />
                 </div>
               </div>
@@ -238,7 +259,7 @@ export default function LoveBoard() {
               className="flex-1 p-4 md:p-6 overflow-y-auto max-h-[600px] custom-scrollbar relative z-10"
             >
               {loading ? (
-                <div className="h-full flex flex-col items-center justify-center space-y-4 text-rose-500">
+                <div className="h-96 flex flex-col items-center justify-center space-y-4 text-rose-500">
                   <Loader2 className="w-12 h-12 animate-spin" />
                   <p className="font-medium animate-pulse">
                     Cargando mensajes de amor...
@@ -287,8 +308,13 @@ export default function LoveBoard() {
                                 className={`flex items-center justify-between gap-4 mb-1 text-xs ${isLeft ? "text-rose-100" : "text-muted-foreground"}`}
                               >
                                 <div className="flex items-center gap-1 font-bold">
-                                  {isLeft ? <User className="w-3 h-3" /> : null}
-                                  <span> Para: {msg.recipient}</span>
+                                  {isLeft ? (
+                                    <User className="w-3 h-3" />
+                                  ) : (
+                                    <User className="w-3 h-3 text-muted-foreground" />
+                                  )}
+                                  <span className="font-black"> Para: </span>
+                                  <span>{msg.recipient}</span>
                                 </div>
                               </div>
 
@@ -304,14 +330,15 @@ export default function LoveBoard() {
                                 className={`flex items-center justify-end gap-2 mt-1 text-[10px] ${isLeft ? "text-rose-100/70" : "text-gray-400"}`}
                               >
                                 <span>{msg.createdAt}</span>
-                                {msg.likes && msg.likes > 0 && (
-                                  <div className="flex items-center gap-0.5">
-                                    <Heart
-                                      className={`w-3 h-3 ${isLeft ? "fill-white/50 text-white" : "fill-rose-500 text-rose-500"}`}
-                                    />
-                                    <span>{msg.likes}</span>
-                                  </div>
-                                )}
+                                <button
+                                  onClick={() => handleLike(msg.id)}
+                                  className={`flex items-center gap-0.5 transition-transform active:scale-125 focus:outline-none`}
+                                >
+                                  <Heart
+                                    className={`w-3 h-3 ${isLeft ? "fill-white/50 text-white" : "fill-rose-500 text-rose-500"}`}
+                                  />
+                                  <span>{msg.likes || 0}</span>
+                                </button>
                               </div>
                             </div>
                           </motion.div>

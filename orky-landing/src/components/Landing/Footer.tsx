@@ -30,7 +30,7 @@ const Footer = () => {
           <div className="flex flex-col gap-6 col-span-1 md:col-span-1">
             <div className="flex items-center gap-2">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center font-bold text-cujae-black text-xl">
-                <img src="/images/orky.png" alt="orky" />
+                <img src="/images/loveOrky.jpg" alt="orky" />
               </div>
               <div className="flex flex-col">
                 <span className="font-bold text-white text-lg leading-tight uppercase tracking-wide">
@@ -72,9 +72,9 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            <h4 className="font-bold text-lg text-cujae-yellow">
+            {/* <h4 className="font-bold text-lg text-cujae-yellow">
               Enlaces Rápidos
-            </h4>
+            </h4> */}
             <div className="flex flex-col gap-3 text-sm text-white/60">
               {/* <Link href="#" className="hover:text-white transition-colors">
                 Admisiones
@@ -82,12 +82,12 @@ const Footer = () => {
               {/* <Link href="#" className="hover:text-white transition-colors">
                 Planes de Estudio
               </Link> */}
-              <Link
+              {/* <Link
                 href="https://t.me/CujaeInf_IC"
                 className="hover:text-white transition-colors"
               >
                 Investigación
-              </Link>
+              </Link> */}
               {/* <Link href="#" className="hover:text-white transition-colors">
                 Postgrado
               </Link> */}
@@ -95,17 +95,17 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            <h4 className="font-bold text-lg text-cujae-yellow">Recursos</h4>
+            {/* <h4 className="font-bold text-lg text-cujae-yellow">Recursos</h4> */}
             <div className="flex flex-col gap-3 text-sm text-white/60">
               {/* <Link href="#" className="hover:text-white transition-colors">
                 Biblioteca Virtual
               </Link> */}
-              <Link
+              {/* <Link
                 href="http://moodle.cujae.edu.cu"
                 className="hover:text-white transition-colors"
               >
                 Moodle Facultad
-              </Link>
+              </Link> */}
               {/* <Link href="#" className="hover:text-white transition-colors">
                 Correo Institucional
               </Link> */}
@@ -116,23 +116,23 @@ const Footer = () => {
           </div>
 
           <div className="flex flex-col gap-6">
-            <h4 className="font-bold text-lg text-cujae-yellow">Contacto</h4>
+            {/* <h4 className="font-bold text-lg text-cujae-yellow">Contacto</h4> */}
             <div className="flex flex-col gap-4 text-sm text-white/60">
               <div className="flex gap-3">
-                <MapPin size={18} className="text-cujae-yellow shrink-0" />
-                <span>
+                {/* <MapPin size={18} className="text-cujae-yellow shrink-0" /> */}
+                {/* <span>
                   Calle 114 #11901, e/ Ciclovía y Rotonda, Marianao, La Habana,
                   Cuba.
-                </span>
+                </span> */}
               </div>
-              <div className="flex gap-3 items-center">
+              {/* <div className="flex gap-3 items-center">
                 <Phone size={18} className="text-cujae-yellow shrink-0" />
                 <span>+53 5 500 4712</span>
               </div>
               <div className="flex gap-3 items-center">
                 <Mail size={18} className="text-cujae-yellow shrink-0" />
                 <span>rogerliva44@gmail.com</span>
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

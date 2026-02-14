@@ -20,6 +20,15 @@ export class LoveMessageService {
     });
   }
 
+  async incrementLikes(id: number): Promise<LoveMessage> {
+    const message = await this.loveMessageRepository.findOne({ where: { id } });
+    if (!message) {
+      throw new Error('Message not found');
+    }
+    message.likes = (message.likes || 0) + 1;
+    return this.loveMessageRepository.save(message);
+  }
+
   async seed() {
     const count = await this.loveMessageRepository.count();
     if (count > 0) {

@@ -13,4 +13,7 @@ export class LoveMessage {
 
   @Column()
   messageDate: Date;
+
+  @Column({ default: 0 })
+  likes: number;
 }
